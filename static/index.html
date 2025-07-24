@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ask a Question</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    h2 {
+      margin-bottom: 1rem;
+      color: #007acc;
+    }
+    input#question {
+      width: 300px;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline-color: #007acc;
+      margin-right: 0.5rem;
+    }
+    button {
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    #response {
+      margin-top: 1.5rem;
+      max-width: 600px;
+      background: #e1ecf4;
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>Ask a question:</h2>
+  <div>
+    <input id="question" placeholder="Type your question here..." />
+    <button onclick="ask()">Send</button>
+  </div>
+  <p id="response"></p>
+
+  <script>
+    async function ask() {
+      const question = document.getElementById('question').value.trim();
+      if (!question) {
+        alert("Please enter a question.");
+        return;
+      }
+      document.getElementById('response').innerText = "Loading...";
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+        const answer = data.answer || "No response.";
+        document.getElementById('response').innerText = answer;
+      } catch (error) {
+        document.getElementById('response').innerText = "Error: Could not get a response.";
+      }
+    }
+  </script>
+</body>
+</html>
